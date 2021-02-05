@@ -18,27 +18,36 @@ class Paddle(pygame.sprite.Sprite):
 
         self.paddle_size = height
 
-    def moveUp(self, pixels=5):
-        self.rect.y -= pixels
-        if self.rect.y < 0:
-            self.rect.y = 0
+        self.x = 0
+        self.y = 0
 
-    def moveDown(self, pixels=5):
-        self.rect.y += pixels
-        if self.rect.y > 400:
-            self.rect.y = 400
+    def moveUp(self, pixels=PADDLE_SPEED):
+        self.y -= pixels
+        if self.y < BANNER_HEIGHT:
+            self.y = BANNER_HEIGHT
+        self.update()
+
+    def moveDown(self, pixels=PADDLE_SPEED):
+        self.y += pixels
+        if self.y > PLAY_AREA[1]+BANNER_HEIGHT-PADDLE_SIZE[1]:
+            self.y = PLAY_AREA[1]+BANNER_HEIGHT-PADDLE_SIZE[1]
+        self.update()
+
+    def update(self):
+        self.rect.x = self.x
+        self.rect.y = self.y
 
     def bounce(self, ball):
-        paddleY = self.rect.y + self.paddle_size/2
-        ballY = ball.rect.y + ball.height/2
+        paddleY = self.y + self.paddle_size/2
+        ballY = ball.y + ball.height/2
         dY = paddleY - ballY
 
-        dTheta = (dY/(self.paddle_size/2)) * math.pi/3 # radians for 60 degrees
+        dTheta = (dY/(self.paddle_size/2)) * math.pi/4 # radians for 45 degrees
         theta = dTheta + ball.getTheta()
-        if theta > math.pi/3:
-            theta = math.pi/3
-        elif theta <= -math.pi/3:
-            theta = -math.pi/3
+        if theta > math.pi/4:
+            theta = math.pi/4
+        elif theta <= -math.pi/4:
+            theta = -math.pi/4
         x = math.cos(dTheta)
         y = math.sin(dTheta)
         y*=-1
@@ -48,10 +57,12 @@ class Paddle(pygame.sprite.Sprite):
         else:
             ball.dir = [-x, y]
 
+        ball.speed *= BALL_SPEED_FACTOR
+
 class Ball(pygame.sprite.Sprite):
     #This class represents a ball. It derives from the "Sprite" class in Pygame.
     
-    def __init__(self, color, width=10, height=10):
+    def __init__(self, color, width=BALL_SIZE[0], height=BALL_SIZE[1], serve='right'):
         # Call the parent class (Sprite) constructor
         super().__init__()
         
@@ -64,8 +75,11 @@ class Ball(pygame.sprite.Sprite):
         # Draw the ball (a rectangle!)
         pygame.draw.rect(self.image, color, [0, 0, width, height])
         
-        self.speed = 5
-        self.dir = [1, 0]
+        self.speed = BALL_SPEED_START
+        if serve == 'right':
+            self.dir = [1, 0]
+        else:
+            self.dir = [-1, 0]
         # self.dir[1] = math.sqrt(1 - self.dir[0]**2)
         
         # Fetch the rectangle object that has the dimensions of the image.
@@ -73,14 +87,17 @@ class Ball(pygame.sprite.Sprite):
 
         self.width = width
         self.height = height
+
+        self.x = 0.0
+        self.y = 0.0
         
     def update(self):
-        self.rect.x += self.dir[0] * self.speed
-        self.rect.y += self.dir[1] * self.speed
-        # print(self.dir)
-        # print(self.rect.x, self.rect.y)
-        if self.rect.y == 0:
-            self.rect.y = 1
+        self.x += self.dir[0] * self.speed
+        self.y += self.dir[1] * self.speed
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+        # if self.rect.y == 0:
+        #     self.rect.y = 1
 
     def getTheta(self):
         return math.atan(-1 * self.dir[1]/self.dir[0])
