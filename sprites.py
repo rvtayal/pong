@@ -94,6 +94,12 @@ class Ball(pygame.sprite.Sprite):
     def update(self):
         self.x += self.dir[0] * self.speed
         self.y += self.dir[1] * self.speed
+
+        # if self.y < BANNER_HEIGHT:
+        #     self.y = BANNER_HEIGHT
+        # elif self.y > PLAY_AREA[1] + BANNER_HEIGHT - BALL_SIZE[1]:
+        #     self.y = PLAY_AREA[1] + BANNER_HEIGHT - BALL_SIZE[1]
+
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
         # if self.rect.y == 0:

@@ -17,7 +17,15 @@ def game_init() -> GameData:
     return gd
 
 
-def game_end():
+def game_end(gd:GameData):
+    winningfont = pygame.font.SysFont(WIN_FONT, WIN_FONT_SIZE)
+    if gd.l_score > gd.r_score:
+        winnerword = winningfont.render("Left WINS!", True, GREEN)
+    else:
+        winnerword = winningfont.render("Right WINS!", True, GREEN)
+    gd.screen.blit(winnerword,(45, SCREEN_SIZE[1]/2 - WIN_FONT_SIZE))
+    pygame.display.flip()
+    pygame.time.delay(3000)
     pygame.quit()
 
 
@@ -32,11 +40,11 @@ def round_init(gd:GameData):
 
     gd.ball = Ball(RED, BALL_SIZE[0], BALL_SIZE[1], gd.serve)
     gd.ball.x = PLAY_AREA[0] / 2
-    gd.ball.y = (PLAY_AREA[1]/2) + BANNER_HEIGHT
+    gd.ball.y = (PLAY_AREA[1]/2) + BANNER_HEIGHT - BALL_SIZE[1]
 
     all_sprites_list = pygame.sprite.Group()
 
-def round(gd:GameData):
+def round(gd:GameData) -> str:
     winner = None
     #This will be a list that will contain all the sprites we intend to use in our game.
     all_sprites_list = pygame.sprite.Group()
@@ -74,9 +82,13 @@ def round(gd:GameData):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 carryOn = False
+                pygame.quit()
+                exit(1)
             elif event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_x: #Pressing the x Key will quit the game
-                        carryOn=False  
+                        carryOn=False
+                        pygame.quit()
+                        exit(1)
 
         #Moving the paddles when the user uses the arrow keys (player A) or "W/S" keys (player B) 
         keys = pygame.key.get_pressed()
@@ -130,9 +142,16 @@ def round(gd:GameData):
         pygame.display.flip()
         clock.tick(60)
 
+    return winner
+
 
 if __name__ == "__main__":
     gd = game_init()
-    round_init(gd)
-    round(gd)
-    game_end()
+    while not gd.isOver():
+        round_init(gd)
+        winner = round(gd)
+        if winner == 'left':
+            gd.serve = 'right'
+        else:
+            gd.serve = 'left'
+    game_end(gd)
