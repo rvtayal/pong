@@ -20,10 +20,18 @@ def game_init() -> GameData:
 def game_end(gd:GameData):
     winningfont = pygame.font.SysFont(WIN_FONT, WIN_FONT_SIZE)
     if gd.l_score > gd.r_score:
-        winnerword = winningfont.render("Left WINS!", True, GREEN)
+        width1, height1 = winningfont.size('Left')
+        width2, height2 = winningfont.size('WINS!')
+        topword = winningfont.render('Left', True, GREEN)
+        bottomword = winningfont.render("WINS!", True, GREEN)
     else:
-        winnerword = winningfont.render("Right WINS!", True, GREEN)
-    gd.screen.blit(winnerword,(45, SCREEN_SIZE[1]/2 - WIN_FONT_SIZE))
+        width1, height1 = winningfont.size('Right')
+        width2, height2 = winningfont.size('WINS!')
+        topword = winningfont.render('Right', True, GREEN)
+        bottomword = winningfont.render("WINS!", True, GREEN)
+
+    gd.screen.blit(topword, ((PLAY_AREA[0]/2) - width1/2, PLAY_AREA[1]/2 + BANNER_HEIGHT - height1 - 20))
+    gd.screen.blit(bottomword,((PLAY_AREA[0]/2) - width2/2, PLAY_AREA[1]/2 + BANNER_HEIGHT))
     pygame.display.flip()
     pygame.time.delay(3000)
     pygame.quit()

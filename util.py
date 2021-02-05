@@ -2,7 +2,7 @@
 SCREEN_SIZE = (700, 600)
 PLAY_AREA = (700, 400)
 BANNER_HEIGHT = SCREEN_SIZE[1] - PLAY_AREA[1]
-SCORE_FONT = 'ani'
+SCORE_FONT = 'agencyfb'
 SCORE_FONT_SIZE = 100
 
 WIN_FONT = 'tlwgtypo'
@@ -21,7 +21,7 @@ PADDLE_SIZE = (10, 100)
 BALL_SIZE = (10, 10)
 BALL_SPEED_FACTOR = 1.05
 BALL_SPEED_START = 5
-WINNING_SCORE = 7
+WINNING_SCORE = 1
 
 # Game Data class to hold relevant game data
 class GameData:
